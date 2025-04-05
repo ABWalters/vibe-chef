@@ -1,0 +1,174 @@
+---
+description: Use for deploying apps to cloudflare pages
+globs: 
+alwaysApply: false
+---
+# Deploying to Cloudflare Pages
+
+This guide explains how to deploy your application to Cloudflare Pages.
+
+## Prerequisites
+
+1. Node.js (Latest LTS version recommended)
+2. Cloudflare account
+3. Wrangler CLI tool (already included in project dependencies)
+4. pnpm package manager
+
+## Required Dependencies
+
+The following dependencies are already configured in your `package.json`:
+
+```json
+{
+  "dependencies": {
+    "vinxi": "0.5.3",
+    "wrangler": "^4.7.0"
+  }
+}
+```
+
+## Configuration Files
+
+### 1. Wrangler Configuration (wrangler.toml)
+
+```toml
+name = "<your-project-name>"
+pages_build_output_dir = "./dist"
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-11-13"
+```
+
+### 2. Build Configuration
+
+Your project uses Vinxi for building. The build configuration is already set up in `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
+  }
+}
+```
+
+## Deployment Steps
+
+1. **Install Dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+2. **Build the Project**
+
+   ```bash
+   pnpm build
+   ```
+
+3. **Login to Cloudflare (first time only)**
+
+   ```bash
+   pnpm dlx wrangler login
+   ```
+
+4. **Deploy to Cloudflare Pages**
+   ```bash
+   pnpm dlx wrangler pages deploy dist
+   ```
+
+## Important Notes
+
+- The build output directory is set to `./dist` in the wrangler.toml configuration
+- Node.js compatibility is enabled through the `nodejs_compat` flag
+- Make sure your Cloudflare account has Pages enabled
+- The first deployment will create a new Pages project in your Cloudflare dashboard
+
+## Continuous Deployment
+
+To set up continuous deployment:
+
+1. Connect your repository to Cloudflare Pages in the Cloudflare Dashboard
+2. Configure the build settings:
+   - Build command: `pnpm build`
+   - Build output directory: `dist`
+   - Node.js version: Latest LTS
+
+## GitHub Actions Deployment
+
+The project includes automated deployments using GitHub Actions. Every push to the `main` branch triggers a deployment to Cloudflare Pages.
+
+### GitHub Actions Workflow (.github/workflows/deploy.yml)
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy dist
+```
+
+### Setting up GitHub Actions Deployment
+
+1. Store your Cloudflare API token as a GitHub repository secret:
+
+   - Go to your GitHub repository settings
+   - Navigate to "Secrets and variables" > "Actions"
+   - Add a new secret named `CLOUDFLARE_API_TOKEN`
+   - Paste your Cloudflare API token as the value
+
+2. The workflow will automatically:
+   - Use pnpm for package management
+   - Install dependencies
+   - Build the project
+   - Deploy to Cloudflare Pages using Wrangler
+
+## Environment Variables
+
+If your application requires environment variables:
+
+1. Add them in the Cloudflare Pages dashboard under Settings > Environment variables
+2. For local development, create a `.env` file (make sure to add it to `.gitignore`)
+3. For GitHub Actions, add them as repository secrets if needed
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Build Fails**: Ensure all dependencies are properly listed in `package.json`
+2. **404 Errors**: Check if the `dist` directory contains the expected files
+3. **API Routes Not Working**: Verify the `nodejs_compat` flag is enabled in `wrangler.toml`
+4. **GitHub Actions Failures**: Check the Actions tab for detailed error logs
+
+For more help, consult the [Cloudflare Pages documentation](https://developers.cloudflare.com/pages/).

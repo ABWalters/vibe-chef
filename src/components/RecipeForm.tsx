@@ -123,7 +123,7 @@ export function RecipeForm() {
 
         <Button
           type="submit"
-          className="w-full bg-black text-white hover:bg-black/90"
+          className="w-full bg-black text-white hover:bg-black/90 transition-all duration-200 py-6 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
         >
           Generate Recipe
         </Button>
