@@ -67,8 +67,8 @@ export function RecipeForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium">Mood</h2>
+        <div className="space-y-3">
+          <h2 className="text-base font-medium text-muted-foreground">Mood</h2>
           <div className="flex flex-wrap gap-2">
             <MoodToggle form={form} value="Lazy" />
             <MoodToggle form={form} value="Quick & Easy" />
@@ -77,8 +77,10 @@ export function RecipeForm() {
           <FormMessage>{form.formState.errors.mood?.message}</FormMessage>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium">Dietary</h2>
+        <div className="space-y-3">
+          <h2 className="text-base font-medium text-muted-foreground">
+            Dietary
+          </h2>
           <div className="flex flex-wrap gap-2">
             <DietaryToggle form={form} value="Vegetarian" />
             <DietaryToggle form={form} value="Low-Carb" />
@@ -86,8 +88,10 @@ export function RecipeForm() {
           <FormMessage>{form.formState.errors.dietary?.message}</FormMessage>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium">Macro Targets</h2>
+        <div className="space-y-3">
+          <h2 className="text-base font-medium text-muted-foreground">
+            Macro Targets
+          </h2>
           <div className="grid grid-cols-3 gap-4">
             <MacroInput form={form} name="protein" label="Protein" />
             <MacroInput form={form} name="carbs" label="Carbs" />
@@ -95,8 +99,10 @@ export function RecipeForm() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium">Ingredients</h2>
+        <div className="space-y-3">
+          <h2 className="text-base font-medium text-muted-foreground">
+            Ingredients
+          </h2>
           <FormField
             control={form.control}
             name="ingredients"
@@ -105,7 +111,7 @@ export function RecipeForm() {
                 <FormControl>
                   <Input
                     placeholder="chicken, basil, tomatoes"
-                    className="w-full"
+                    className="w-full h-9 bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     {...field}
                   />
                 </FormControl>
@@ -115,7 +121,10 @@ export function RecipeForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full">
+        <Button
+          type="submit"
+          className="w-full bg-black text-white hover:bg-black/90"
+        >
           Generate Recipe
         </Button>
       </form>
@@ -142,7 +151,7 @@ function MoodToggle({
               onPressedChange={() =>
                 field.onChange(field.value === value ? null : value)
               }
-              className="px-4 py-2"
+              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm"
             >
               {value}
             </Toggle>
@@ -175,7 +184,7 @@ function DietaryToggle({
                   : field.value.filter((v: string) => v !== value);
                 field.onChange(newValue);
               }}
-              className="px-4 py-2"
+              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm"
             >
               {value}
             </Toggle>
@@ -201,16 +210,18 @@ function MacroInput({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className="text-sm text-muted-foreground mb-1.5 block">
+            {label}
+          </FormLabel>
           <FormControl>
             <div className="relative">
               <Input
                 type="number"
                 placeholder="0"
-                className="pr-8"
+                className="h-9 pr-5 bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
                 {...field}
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                 g
               </span>
             </div>

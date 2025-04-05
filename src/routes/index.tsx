@@ -9,12 +9,12 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-rose-50/20">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <main className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h1 className="text-4xl font-serif mb-8">
+            <h1 className="text-4xl font-serif mb-10">
               What do you feel
               <br />
               like eating?
