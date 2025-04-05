@@ -31,7 +31,9 @@ Do not install new packages, change the structure, or make architectural changes
 
 ## Handle errors and linting issues without excessive code writing
 
-Do not try and complete features, or write lots of new code to resolve errors or lint warnings
+Do not try and complete features, or write lots of new code to resolve errors or lint warnings.
+
+Add a "TODO" comment and resolve the issue without too much additional code or needing to finish the implementation.
 
 Use:
 • Placeholders
