@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "../components/Header";
 import { RecipeForm } from "../components/RecipeForm";
+import { RecipeCard } from "../components/RecipeCard";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -20,7 +21,13 @@ function Home() {
             </h1>
             <RecipeForm />
           </div>
-          <div>{/* Recipe card will go here */}</div>
+          <div className="flex items-start md:sticky md:top-8">
+            <RecipeCard
+              title="Grilled Chicken Salad"
+              description="A satisfying salad with juicy grilled chicken, fresh vegetables, and a simple dressing."
+              imageUrl="/recipe-image.jpg"
+            />
+          </div>
         </div>
       </main>
     </div>
