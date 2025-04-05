@@ -1,13 +1,27 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "../components/Header";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: Home,
-})
+});
 
 function Home() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!!!</h3>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h1 className="text-4xl font-serif mb-8">
+              What do you feel
+              <br />
+              like eating?
+            </h1>
+            {/* Recipe form will go here */}
+          </div>
+          <div>{/* Recipe card will go here */}</div>
+        </div>
+      </main>
     </div>
-  )
+  );
 }
