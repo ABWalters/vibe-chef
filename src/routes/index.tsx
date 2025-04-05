@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "../components/Header";
+import { RecipeForm } from "../components/RecipeForm";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -17,7 +18,7 @@ function Home() {
               <br />
               like eating?
             </h1>
-            {/* Recipe form will go here */}
+            <RecipeForm />
           </div>
           <div>{/* Recipe card will go here */}</div>
         </div>
