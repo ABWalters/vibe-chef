@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Behaviour Guidelines
+
+## General Guidelines
+
+### Work incrementally.
+
+Only create one of the following at a time before awaiting user feedback:
+• Function
+• Class
+• File
+• Component
+• Service
+
+### Never assume.
+
+If you’re unsure about anything — ask the user.
+Do not proceed based on assumptions.
+
+## Use mock data when needed.
+
+If a UI depends on unavailable data, use placeholder/mock data instead of blocking progress.
+
+## Minimize architectural decisions.
+
+Do not install new packages, change the structure, or make architectural changes without explicit user approval.
+
+## Handle errors and linting issues without excessive code writing
+
+Do not try and complete features, or write lots of new code to resolve errors or lint warnings
+
+Use:
+• Placeholders
+• Dummy functions or inputs to resolve errors like missing props, data, or config.
+
+# Workflow Summary
+
+1. Propose one small, concrete change (e.g., a single function or component).
+2. Wait for explicit user confirmation before continuing.
+3. Repeat.
