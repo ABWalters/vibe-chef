@@ -1,0 +1,10 @@
+---
+description: Describe dependency management, always read this when installing, verifying or modifying dependencies
+globs: 
+alwaysApply: false
+---
+# Dependency Management
+
+This repo uses pnpm as the package manager and script runner.
+
+use pnpm dev <command> to run dev commands.
