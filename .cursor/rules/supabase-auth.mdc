@@ -1,0 +1,245 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Setting Up Supabase Magic Link Authentication with TanStack Start
+
+Reference: @https://tanstack.com/router/v1/docs/framework/react/examples/start-supabase-basic
+
+This guide explains how to implement passwordless authentication using Supabase Magic Links in a TanStack Start application.
+
+## Prerequisites
+
+Install the required dependencies:
+
+```bash
+npm install @supabase/supabase-js zustand @hookform/resolvers zod react-hook-form
+```
+
+## Environment Setup
+
+1. Create a `.env` file in your project root:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## Implementation Steps
+
+### 1. Supabase Client Setup
+
+Create a Supabase client instance (e.g., in `src/services/supabase/client.ts`):
+
+```typescript
+import { createClient } from "@supabase/supabase-js";
+
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+```
+
+### 2. Auth Store Setup
+
+Create an authentication store using Zustand (`src/store/authStore.ts`):
+
+```typescript
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "../services/supabase/client";
+
+interface AuthState {
+  session: Session | null;
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  setSession: (session: Session | null) => void;
+  setUser: (user: User | null) => void;
+  setLoading: (isLoading: boolean) => void;
+  signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      session: null,
+      user: null,
+      isLoading: true,
+      isAuthenticated: false,
+
+      setSession: (session) =>
+        set({
+          session,
+          isAuthenticated: !!session,
+          user: session?.user ?? null,
+        }),
+
+      // ... other methods
+    }),
+    {
+      name: "auth-storage",
+      partialize: (state) => ({
+        session: state.session,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);
+```
+
+### 3. Protected Route Setup
+
+Create an authenticated layout route (`src/routes/_authenticated.tsx`):
+
+```typescript
+import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
+import { useAuthStore } from "../store/authStore";
+
+export const Route = createFileRoute("/_authenticated")({
+  beforeLoad: ({ location }) => {
+    const { isAuthenticated, isLoading } = useAuthStore.getState();
+
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
+      throw redirect({
+        to: "/auth/login",
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+  },
+  component: AuthenticatedLayout,
+});
+
+function AuthenticatedLayout() {
+  return <Outlet />;
+}
+```
+
+### 4. Login Page Implementation
+
+Create a login page (`src/routes/auth/login.tsx`) with Magic Link functionality:
+
+```typescript
+import { createFileRoute } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { supabase } from "../services/supabase/client";
+
+const formSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export const Route = createFileRoute("/auth/login")({
+  component: LoginPage,
+});
+
+function LoginPage() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: values.email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    // Handle response...
+  }
+
+  // Render form...
+}
+```
+
+### 5. Auth Callback Handler
+
+Create a callback handler (`src/routes/auth/callback.tsx`) to process the Magic Link response:
+
+```typescript
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { supabase } from "../services/supabase/client";
+import { useAuthStore } from "../store/authStore";
+
+export const Route = createFileRoute("/auth/callback")({
+  component: AuthCallbackPage,
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      throw redirect({
+        to: "/",
+        replace: true,
+      });
+    }
+  },
+});
+
+function AuthCallbackPage() {
+  // Handle hash params and session setup...
+}
+```
+
+## Usage
+
+1. Users visit the login page
+2. Enter their email address
+3. Receive a Magic Link in their email
+4. Click the link to be authenticated
+5. Redirected to the protected area of your app
+
+## Security Considerations
+
+1. Always use environment variables for Supabase credentials
+2. Implement proper session management
+3. Use protected routes for authenticated content
+4. Handle session expiration gracefully
+5. Implement proper error handling
+
+## Additional Features
+
+You can enhance the authentication system with:
+
+- Session persistence
+- Loading states
+- Error handling
+- Redirect after authentication
+- Protected route handling
+- Sign-out functionality
+
+## Testing
+
+Test the following scenarios:
+
+1. Magic Link email delivery
+2. Authentication flow
+3. Protected route access
+4. Session management
+5. Error handling
+6. Sign-out functionality
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. Magic Link not received
+
+   - Check spam folder
+   - Verify email configuration in Supabase
+
+2. Callback errors
+
+   - Ensure correct redirect URL configuration
+   - Check for proper error handling
+
+3. Session management issues
+   - Verify proper session storage
+   - Check for session expiration handling
