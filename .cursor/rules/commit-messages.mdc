@@ -1,0 +1,108 @@
+---
+description: Use this rule when generating commit messages
+globs: 
+alwaysApply: false
+---
+## Conventional Commit Rules
+
+The Conventional Commits specification provides a consistent format for commit messages to make versioning, changelogs, and automation easier.
+
+Format
+
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+
+
+
+⸻
+
+Types (Required)
+
+Type	Description
+feat	A new feature for the user
+fix	A bug fix
+docs	Documentation only changes
+style	Formatting only (whitespace, semicolons, etc.)
+refactor	Code change that neither fixes a bug nor adds a feature
+perf	Performance improvements
+test	Adding or correcting tests
+chore	Build process or auxiliary tool changes
+ci	Changes to CI configuration files and scripts
+build	Changes that affect the build system or dependencies
+
+
+
+⸻
+
+Scope (Optional)
+
+Describes the area of the codebase affected (e.g. api, auth, ui, deps, db, etc.)
+
+Example:
+
+feat(auth): add OAuth2 login
+
+
+
+⸻
+
+Description (Required)
+	•	Use the imperative mood: “fix”, not “fixed” or “fixes”
+	•	Keep it short and specific
+
+⸻
+
+Body (Optional)
+
+More detailed description of the change. Explains what and why, not how.
+
+⸻
+
+Footer (Optional)
+
+Used for breaking changes and issue references.
+	•	Breaking changes must start with BREAKING CHANGE:
+	•	Use Closes, Fixes, Refs to reference issues
+
+⸻
+
+Examples
+
+# Feature
+feat(ui): add dark mode toggle
+
+# Bug fix
+fix(auth): prevent login with expired token
+
+# Documentation
+docs(readme): update setup instructions
+
+# Refactor
+refactor(core): simplify data transformation logic
+
+# Style
+style: remove unused imports and apply Prettier
+
+# Test
+test(api): add tests for user creation endpoint
+
+# Chore
+chore(deps): upgrade eslint to v8
+
+# CI
+ci(github): add matrix build for Node 18
+
+# Build
+build: migrate to pnpm from yarn
+
+# Breaking Change
+feat(config): remove legacy config loading  
+BREAKING CHANGE: legacy config formats are no longer supported
+
+# Issue reference
+fix(db): avoid null reference errors  
+Fixes: #123
+
