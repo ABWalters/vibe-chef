@@ -14,8 +14,10 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Toggle } from "./ui/toggle";
 import { MoodToggle } from "./MoodToggle";
+import { MacroTargetToggle } from "./MacroTargetToggle";
 import { Mood } from "../types/Mood";
 import { Dietary } from "../types/Vibe";
+import { MacroTarget } from "../types/MacroTarget";
 
 const dietaryEnum = z.enum(["Vegetarian", "Low-Carb"]);
 type DietaryOption = z.infer<typeof dietaryEnum>;
@@ -24,21 +26,7 @@ const formSchema = z.object({
   freeText: z.string().max(1000, "Text must be less than 1000 characters"),
   mood: z.custom<Mood>().optional(),
   dietary: z.array(dietaryEnum),
-  protein: z
-    .string()
-    .refine((val) => !val || !isNaN(Number(val)), "Must be a number")
-    .refine((val) => !val || Number(val) >= 0, "Must be positive")
-    .refine((val) => !val || Number(val) <= 300, "Must be less than 300g"),
-  carbs: z
-    .string()
-    .refine((val) => !val || !isNaN(Number(val)), "Must be a number")
-    .refine((val) => !val || Number(val) >= 0, "Must be positive")
-    .refine((val) => !val || Number(val) <= 300, "Must be less than 300g"),
-  fat: z
-    .string()
-    .refine((val) => !val || !isNaN(Number(val)), "Must be a number")
-    .refine((val) => !val || Number(val) >= 0, "Must be positive")
-    .refine((val) => !val || Number(val) <= 300, "Must be less than 300g"),
+  macros: z.custom<MacroTarget>().optional(),
   ingredients: z
     .string()
     .min(1, "Please enter at least one ingredient")
@@ -54,9 +42,7 @@ export function RecipeForm() {
       freeText: "",
       mood: undefined,
       dietary: [],
-      protein: "",
-      carbs: "",
-      fat: "",
+      macros: undefined,
       ingredients: "",
     },
   });
@@ -125,13 +111,23 @@ export function RecipeForm() {
 
         <div className="space-y-3">
           <h2 className="text-base font-medium text-muted-foreground">
-            Macro Targets
+            Macro Goals
           </h2>
-          <div className="grid grid-cols-3 gap-4">
-            <MacroInput form={form} name="protein" label="Protein" />
-            <MacroInput form={form} name="carbs" label="Carbs" />
-            <MacroInput form={form} name="fat" label="Fat" />
-          </div>
+          <FormField
+            control={form.control}
+            name="macros"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <MacroTargetToggle
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="space-y-3">
@@ -194,44 +190,6 @@ function DietaryToggle({
               {value}
             </Toggle>
           </FormControl>
-        </FormItem>
-      )}
-    />
-  );
-}
-
-function MacroInput({
-  form,
-  name,
-  label,
-}: {
-  form: ReturnType<typeof useForm<RecipeFormData>>;
-  name: keyof Pick<RecipeFormData, "protein" | "carbs" | "fat">;
-  label: string;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel className="text-sm text-muted-foreground mb-1.5 block">
-            {label}
-          </FormLabel>
-          <FormControl>
-            <div className="relative">
-              <Input
-                type="number"
-                placeholder="0"
-                className="h-9 pr-5 bg-white/50 border border-gray-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                {...field}
-              />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                g
-              </span>
-            </div>
-          </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />
