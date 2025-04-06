@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MacroTarget } from "../types/MacroTarget";
-import { Vibe } from "../types/Mood";
+import { Dietary, Vibe } from "../types/Vibe";
 import { MacroTargetToggle } from "./MacroTargetToggle";
 import { VibeToggle } from "./MoodToggle";
 import { Button } from "./ui/button";
@@ -10,8 +10,11 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Toggle } from "./ui/toggle";
 import { Utensils } from "lucide-react";
+import { useVibeStore } from "../stores/vibeStore";
+import { uuidv7 } from "uuidv7";
+import { useNavigate } from "@tanstack/react-router";
 
-const dietaryEnum = z.enum(["Vegetarian", "Low-Carb"]);
+const dietaryEnum = z.nativeEnum(Dietary);
 type DietaryOption = z.infer<typeof dietaryEnum>;
 
 const vibeSchema = z.object({
@@ -33,6 +36,9 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export function RecipeForm() {
+  const navigate = useNavigate();
+  const addVibe = useVibeStore((state) => state.addVibe);
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,9 +46,19 @@ export function RecipeForm() {
     },
   });
 
-  function onSubmit(values: FormSchema) {
-    console.log(values);
-    // TODO: Handle form submission
+  async function onSubmit(values: FormSchema) {
+    const id = uuidv7();
+    const vibe: Vibe = {
+      id,
+      freeText: values.freeText,
+      mood: values.vibe,
+      dietary: values.dietary,
+      macros: values.macros,
+      createdAt: new Date(),
+    };
+
+    addVibe(vibe);
+    navigate({ to: `/vibe/${id}` });
   }
 
   return (
@@ -96,8 +112,8 @@ export function RecipeForm() {
             Dietary (Optional)
           </h2>
           <div className="flex flex-wrap gap-2">
-            <DietaryToggle form={form} value="Vegetarian" />
-            <DietaryToggle form={form} value="Low-Carb" />
+            <DietaryToggle form={form} value={Dietary.Vegetarian} />
+            <DietaryToggle form={form} value={Dietary.LowCarb} />
           </div>
           <FormMessage>{form.formState.errors.dietary?.message}</FormMessage>
         </div>
