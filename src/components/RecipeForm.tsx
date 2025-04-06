@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Toggle } from "./ui/toggle";
+import { Textarea } from "./ui/textarea";
 import {
   Form,
   FormControl,
@@ -21,6 +22,7 @@ type MoodOption = z.infer<typeof moodEnum>;
 type DietaryOption = z.infer<typeof dietaryEnum>;
 
 const formSchema = z.object({
+  freeText: z.string().max(1000, "Text must be less than 1000 characters"),
   mood: moodEnum.nullable(),
   dietary: z.array(dietaryEnum),
   protein: z
@@ -50,6 +52,7 @@ export function RecipeForm() {
   const form = useForm<RecipeFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      freeText: "",
       mood: null,
       dietary: [],
       protein: "",
@@ -67,6 +70,28 @@ export function RecipeForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="space-y-3">
+          <h2 className="text-base font-medium text-muted-foreground">
+            Tell me what you're looking for
+          </h2>
+          <FormField
+            control={form.control}
+            name="freeText"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe what kind of recipe you're looking for... (e.g., 'I want something spicy and filling that I can make in under 30 minutes')"
+                    className="bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <div className="space-y-3">
           <h2 className="text-base font-medium text-muted-foreground">Mood</h2>
           <div className="flex flex-wrap gap-2">
