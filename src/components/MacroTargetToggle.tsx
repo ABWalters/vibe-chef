@@ -2,7 +2,7 @@ import { MACRO_TARGETS } from "../data/macroTargets.data";
 import { MacroTarget } from "../types/MacroTarget";
 import { cn } from "../lib/utils";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Dumbbell, Carrot, Cookie, Scale } from "lucide-react";
+import { Dumbbell, Carrot, Cookie, Scale, IceCream } from "lucide-react";
 
 const macroIcons = {
   HIGH_PROTEIN_LUNCH: Dumbbell,
@@ -10,6 +10,7 @@ const macroIcons = {
   DECADENT_DINNER: Cookie,
   LOW_CARB_MEAL: Scale,
   BALANCED_MEAL: Scale,
+  HEALTHY_DESSERT: IceCream,
 } as const;
 
 interface MacroTargetToggleProps {

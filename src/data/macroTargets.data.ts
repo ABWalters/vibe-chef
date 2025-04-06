@@ -57,4 +57,16 @@ export const MACRO_TARGETS: Record<string, MacroTargetOption> = {
       calories: 600,
     },
   },
+  HEALTHY_DESSERT: {
+    id: "HEALTHY_DESSERT",
+    title: "Healthy Dessert",
+    description:
+      "A guilt-free sweet treat with moderate carbs and healthy fats",
+    values: {
+      protein: 8,
+      carbs: 25,
+      fat: 12,
+      calories: 250,
+    },
+  },
 } as const;
