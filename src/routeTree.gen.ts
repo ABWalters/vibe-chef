@@ -17,11 +17,11 @@ import { Route as DeferredImport } from './routes/deferred'
 import { Route as PathlessLayoutImport } from './routes/_pathlessLayout'
 import { Route as AuthedImport } from './routes/_authed'
 import { Route as IndexImport } from './routes/index'
-import { Route as VibeVibeIdImport } from './routes/vibe.$vibeId'
 import { Route as AuthCallbackImport } from './routes/auth/callback'
 import { Route as PathlessLayoutNestedLayoutImport } from './routes/_pathlessLayout/_nested-layout'
 import { Route as PathlessLayoutNestedLayoutRouteBImport } from './routes/_pathlessLayout/_nested-layout/route-b'
 import { Route as PathlessLayoutNestedLayoutRouteAImport } from './routes/_pathlessLayout/_nested-layout/route-a'
+import { Route as AuthedVibeVibeIdImport } from './routes/_authed/vibe.$vibeId'
 
 // Create/Update Routes
 
@@ -59,12 +59,6 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const VibeVibeIdRoute = VibeVibeIdImport.update({
-  id: '/vibe/$vibeId',
-  path: '/vibe/$vibeId',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AuthCallbackRoute = AuthCallbackImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -91,6 +85,12 @@ const PathlessLayoutNestedLayoutRouteARoute =
     path: '/route-a',
     getParentRoute: () => PathlessLayoutNestedLayoutRoute,
   } as any)
+
+const AuthedVibeVibeIdRoute = AuthedVibeVibeIdImport.update({
+  id: '/vibe/$vibeId',
+  path: '/vibe/$vibeId',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -152,12 +152,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackImport
       parentRoute: typeof rootRoute
     }
-    '/vibe/$vibeId': {
-      id: '/vibe/$vibeId'
+    '/_authed/vibe/$vibeId': {
+      id: '/_authed/vibe/$vibeId'
       path: '/vibe/$vibeId'
       fullPath: '/vibe/$vibeId'
-      preLoaderRoute: typeof VibeVibeIdImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthedVibeVibeIdImport
+      parentRoute: typeof AuthedImport
     }
     '/_pathlessLayout/_nested-layout/route-a': {
       id: '/_pathlessLayout/_nested-layout/route-a'
@@ -177,6 +177,17 @@ declare module '@tanstack/react-router' {
 }
 
 // Create and export the route tree
+
+interface AuthedRouteChildren {
+  AuthedVibeVibeIdRoute: typeof AuthedVibeVibeIdRoute
+}
+
+const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedVibeVibeIdRoute: AuthedVibeVibeIdRoute,
+}
+
+const AuthedRouteWithChildren =
+  AuthedRoute._addFileChildren(AuthedRouteChildren)
 
 interface PathlessLayoutNestedLayoutRouteChildren {
   PathlessLayoutNestedLayoutRouteARoute: typeof PathlessLayoutNestedLayoutRouteARoute
@@ -215,7 +226,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/vibe/$vibeId': typeof VibeVibeIdRoute
+  '/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
   '/route-b': typeof PathlessLayoutNestedLayoutRouteBRoute
 }
@@ -227,7 +238,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/vibe/$vibeId': typeof VibeVibeIdRoute
+  '/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
   '/route-b': typeof PathlessLayoutNestedLayoutRouteBRoute
 }
@@ -235,14 +246,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/_authed': typeof AuthedRoute
+  '/_authed': typeof AuthedRouteWithChildren
   '/_pathlessLayout': typeof PathlessLayoutRouteWithChildren
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/_pathlessLayout/_nested-layout': typeof PathlessLayoutNestedLayoutRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
-  '/vibe/$vibeId': typeof VibeVibeIdRoute
+  '/_authed/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
   '/_pathlessLayout/_nested-layout/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
   '/_pathlessLayout/_nested-layout/route-b': typeof PathlessLayoutNestedLayoutRouteBRoute
 }
@@ -280,7 +291,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/_pathlessLayout/_nested-layout'
     | '/auth/callback'
-    | '/vibe/$vibeId'
+    | '/_authed/vibe/$vibeId'
     | '/_pathlessLayout/_nested-layout/route-a'
     | '/_pathlessLayout/_nested-layout/route-b'
   fileRoutesById: FileRoutesById
@@ -288,24 +299,22 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthedRoute: typeof AuthedRoute
+  AuthedRoute: typeof AuthedRouteWithChildren
   PathlessLayoutRoute: typeof PathlessLayoutRouteWithChildren
   DeferredRoute: typeof DeferredRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
-  VibeVibeIdRoute: typeof VibeVibeIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthedRoute: AuthedRoute,
+  AuthedRoute: AuthedRouteWithChildren,
   PathlessLayoutRoute: PathlessLayoutRouteWithChildren,
   DeferredRoute: DeferredRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   AuthCallbackRoute: AuthCallbackRoute,
-  VibeVibeIdRoute: VibeVibeIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -324,15 +333,17 @@ export const routeTree = rootRoute
         "/deferred",
         "/login",
         "/logout",
-        "/auth/callback",
-        "/vibe/$vibeId"
+        "/auth/callback"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
     "/_authed": {
-      "filePath": "_authed.tsx"
+      "filePath": "_authed.tsx",
+      "children": [
+        "/_authed/vibe/$vibeId"
+      ]
     },
     "/_pathlessLayout": {
       "filePath": "_pathlessLayout.tsx",
@@ -360,8 +371,9 @@ export const routeTree = rootRoute
     "/auth/callback": {
       "filePath": "auth/callback.tsx"
     },
-    "/vibe/$vibeId": {
-      "filePath": "vibe.$vibeId.tsx"
+    "/_authed/vibe/$vibeId": {
+      "filePath": "_authed/vibe.$vibeId.tsx",
+      "parent": "/_authed"
     },
     "/_pathlessLayout/_nested-layout/route-a": {
       "filePath": "_pathlessLayout/_nested-layout/route-a.tsx",

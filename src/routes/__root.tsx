@@ -9,6 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
+import { Header } from "~/components/Header";
 import { NotFound } from "~/components/NotFound";
 import globalsCss from "~/styles/globals.css?url";
 import { seo } from "~/utils/seo";
@@ -85,7 +86,10 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <div className="min-h-full bg-rose-50/20">
+        <Header />
+        <Outlet />
+      </div>
     </RootDocument>
   );
 }
