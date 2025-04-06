@@ -1,11 +1,5 @@
-/**
- * Represents the mood of the recipe the user wants to create
- */
-export enum Mood {
-  Lazy = "Lazy",
-  QuickAndEasy = "Quick & Easy",
-  SlowAndDelicious = "Slow & Delicious",
-}
+import { Mood } from "./Mood";
+import { MacroTarget } from "./MacroTarget";
 
 /**
  * Represents dietary preferences for the recipe
@@ -30,9 +24,9 @@ export interface MacroTargets {
 export interface Vibe {
   id: string;
   freeText: string;
-  mood: Mood | null;
+  mood?: Mood;
   dietary: Dietary[];
-  macros: MacroTargets;
+  macros?: MacroTarget;
   ingredients: string[];
   createdAt: Date;
   updatedAt?: Date;
