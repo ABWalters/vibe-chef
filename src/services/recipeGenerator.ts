@@ -3,6 +3,7 @@ import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 import { Recipe } from "../types/Recipe";
 import { Vibe } from "../types/Vibe";
+import { env } from "../config/env";
 
 // Schema that matches our Recipe type but in a format suitable for LLM generation
 const recipeGenerationSchema = z.object({
