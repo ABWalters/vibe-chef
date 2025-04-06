@@ -27,7 +27,6 @@ export interface Vibe {
   mood?: Mood;
   dietary: Dietary[];
   macros?: MacroTarget;
-  ingredients: string[];
   createdAt: Date;
   updatedAt?: Date;
   userId?: string;

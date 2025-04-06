@@ -1,56 +1,44 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { MacroTarget } from "../types/MacroTarget";
+import { MacroTargetToggle } from "./MacroTargetToggle";
+import { MoodToggle } from "./MoodToggle";
 import { Button } from "./ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Toggle } from "./ui/toggle";
-import { MoodToggle } from "./MoodToggle";
-import { MacroTargetToggle } from "./MacroTargetToggle";
-import { Mood } from "../types/Mood";
-import { Dietary } from "../types/Vibe";
-import { MacroTarget } from "../types/MacroTarget";
 
 const dietaryEnum = z.enum(["Vegetarian", "Low-Carb"]);
 type DietaryOption = z.infer<typeof dietaryEnum>;
 
-const formSchema = z.object({
-  freeText: z.string().max(1000, "Text must be less than 1000 characters"),
-  mood: z.custom<Mood>().optional(),
-  dietary: z.array(dietaryEnum),
-  macros: z.custom<MacroTarget>().optional(),
-  ingredients: z
-    .string()
-    .min(1, "Please enter at least one ingredient")
-    .max(200, "Ingredient list is too long"),
+const moodSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
 });
 
-type RecipeFormData = z.infer<typeof formSchema>;
+const formSchema = z.object({
+  freeText: z
+    .string()
+    .min(20, "Please describe what you're looking for in more detail")
+    .max(1000, "Text must be less than 1000 characters"),
+  mood: moodSchema.required(),
+  dietary: z.array(dietaryEnum),
+  macros: z.custom<MacroTarget>().optional(),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
 
 export function RecipeForm() {
-  const form = useForm<RecipeFormData>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      freeText: "",
-      mood: undefined,
-      dietary: [],
-      macros: undefined,
-      ingredients: "",
-    },
   });
 
-  const onSubmit = (data: RecipeFormData) => {
-    console.log(data);
+  function onSubmit(values: FormSchema) {
+    console.log(values);
     // TODO: Handle form submission
-  };
+  }
 
   return (
     <Form {...form}>
@@ -100,7 +88,7 @@ export function RecipeForm() {
 
         <div className="space-y-3">
           <h2 className="text-base font-medium text-muted-foreground">
-            Dietary
+            Dietary (Optional)
           </h2>
           <div className="flex flex-wrap gap-2">
             <DietaryToggle form={form} value="Vegetarian" />
@@ -111,7 +99,7 @@ export function RecipeForm() {
 
         <div className="space-y-3">
           <h2 className="text-base font-medium text-muted-foreground">
-            Macro Goals
+            Macro Goals (Optional)
           </h2>
           <FormField
             control={form.control}
@@ -122,28 +110,6 @@ export function RecipeForm() {
                   <MacroTargetToggle
                     value={field.value}
                     onValueChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <h2 className="text-base font-medium text-muted-foreground">
-            Ingredients
-          </h2>
-          <FormField
-            control={form.control}
-            name="ingredients"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="chicken, basil, tomatoes"
-                    className="w-full h-9 bg-white/50 border border-gray-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -167,7 +133,7 @@ function DietaryToggle({
   form,
   value,
 }: {
-  form: ReturnType<typeof useForm<RecipeFormData>>;
+  form: ReturnType<typeof useForm<FormSchema>>;
   value: DietaryOption;
 }) {
   return (
@@ -178,7 +144,7 @@ function DietaryToggle({
         <FormItem>
           <FormControl>
             <Toggle
-              pressed={field.value.includes(value)}
+              pressed={(field.value ?? []).includes(value)}
               onPressedChange={(pressed) => {
                 const newValue = pressed
                   ? [...field.value, value]
