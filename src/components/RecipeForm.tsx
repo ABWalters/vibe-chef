@@ -82,7 +82,7 @@ export function RecipeForm() {
                 <FormControl>
                   <Textarea
                     placeholder="Describe what kind of recipe you're looking for... (e.g., 'I want something spicy and filling that I can make in under 30 minutes')"
-                    className="bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[100px]"
+                    className="bg-white/50 border border-gray-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[100px]"
                     {...field}
                   />
                 </FormControl>
@@ -136,7 +136,7 @@ export function RecipeForm() {
                 <FormControl>
                   <Input
                     placeholder="chicken, basil, tomatoes"
-                    className="w-full h-9 bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="w-full h-9 bg-white/50 border border-gray-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     {...field}
                   />
                 </FormControl>
@@ -176,7 +176,7 @@ function MoodToggle({
               onPressedChange={() =>
                 field.onChange(field.value === value ? null : value)
               }
-              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm"
+              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm border border-gray-200 shadow-sm"
             >
               {value}
             </Toggle>
@@ -209,7 +209,7 @@ function DietaryToggle({
                   : field.value.filter((v: string) => v !== value);
                 field.onChange(newValue);
               }}
-              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm"
+              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm border border-gray-200 shadow-sm"
             >
               {value}
             </Toggle>
@@ -243,7 +243,7 @@ function MacroInput({
               <Input
                 type="number"
                 placeholder="0"
-                className="h-9 pr-5 bg-white/50 border-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="h-9 pr-5 bg-white/50 border border-gray-200 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                 {...field}
               />
               <span className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
