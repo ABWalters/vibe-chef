@@ -1,5 +1,5 @@
 import { generateObject } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
 import { z } from "zod";
 import { Recipe } from "../types/Recipe";
 import { Vibe } from "../types/Vibe";
@@ -38,6 +38,10 @@ export type GeneratedRecipe = z.infer<
   typeof recipeGenerationSchema
 >["recipes"][0];
 
+const openai = createOpenAI({
+  apiKey: env.VITE_OPENAI_API_KEY,
+});
+
 export async function generateRecipes(
   vibe: Vibe,
   count: number = 3
@@ -46,7 +50,7 @@ export async function generateRecipes(
 
   try {
     const { object } = await generateObject({
-      model: openai("gpt-4-turbo"),
+      model: openai("gpt-4o-mini"),
       schema: recipeGenerationSchema,
       prompt: `Generate ${count} recipes based on these requirements: ${prompt}`,
     });
