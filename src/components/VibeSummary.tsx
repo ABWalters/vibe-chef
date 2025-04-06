@@ -12,6 +12,16 @@ const VibeSummary = ({ vibe }: { vibe: Vibe }) => {
           <p className="text-sm font-medium">Description:</p>
           <p className="text-sm">{vibe.freeText}</p>
         </div>
+        {vibe.mood && (
+          <div>
+            <p className="text-sm font-medium">Mood:</p>
+            <div className="mt-1">
+              <span className="bg-slate-100 text-slate-800 text-sm px-3 py-1 rounded-full">
+                {vibe.mood.title}
+              </span>
+            </div>
+          </div>
+        )}
         <div>
           <p className="text-sm font-medium">Dietary Preferences:</p>
           <div className="flex gap-2 mt-1">

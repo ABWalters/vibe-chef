@@ -1,4 +1,4 @@
-import { Mood } from "./Mood";
+import { Vibe as Mood } from "./Mood";
 import { MacroTarget } from "./MacroTarget";
 
 /**
