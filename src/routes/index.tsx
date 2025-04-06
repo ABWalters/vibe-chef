@@ -18,7 +18,7 @@ function Home() {
               <br />
               like eating?
             </h1>
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-2xl">
               <RecipeForm />
             </div>
           </div>

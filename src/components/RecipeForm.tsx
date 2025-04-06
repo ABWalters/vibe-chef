@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Toggle } from "./ui/toggle";
-import { Textarea } from "./ui/textarea";
 import {
   Form,
   FormControl,
@@ -11,19 +10,19 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Toggle } from "./ui/toggle";
+import { MoodToggle } from "./MoodToggle";
+import { Mood } from "../types/Mood";
+import { Dietary } from "../types/Vibe";
 
-const moodEnum = z.enum(["Lazy", "Quick & Easy", "Slow & Delicious"]);
 const dietaryEnum = z.enum(["Vegetarian", "Low-Carb"]);
-
-type MoodOption = z.infer<typeof moodEnum>;
 type DietaryOption = z.infer<typeof dietaryEnum>;
 
 const formSchema = z.object({
   freeText: z.string().max(1000, "Text must be less than 1000 characters"),
-  mood: moodEnum.nullable(),
+  mood: z.custom<Mood>().optional(),
   dietary: z.array(dietaryEnum),
   protein: z
     .string()
@@ -53,7 +52,7 @@ export function RecipeForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       freeText: "",
-      mood: null,
+      mood: undefined,
       dietary: [],
       protein: "",
       carbs: "",
@@ -93,13 +92,24 @@ export function RecipeForm() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-base font-medium text-muted-foreground">Mood</h2>
-          <div className="flex flex-wrap gap-2">
-            <MoodToggle form={form} value="Lazy" />
-            <MoodToggle form={form} value="Quick & Easy" />
-            <MoodToggle form={form} value="Slow & Delicious" />
-          </div>
-          <FormMessage>{form.formState.errors.mood?.message}</FormMessage>
+          <h2 className="text-base font-medium text-muted-foreground">
+            What's your mood?
+          </h2>
+          <FormField
+            control={form.control}
+            name="mood"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <MoodToggle
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="space-y-3">
@@ -154,36 +164,6 @@ export function RecipeForm() {
         </Button>
       </form>
     </Form>
-  );
-}
-
-function MoodToggle({
-  form,
-  value,
-}: {
-  form: ReturnType<typeof useForm<RecipeFormData>>;
-  value: MoodOption;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name="mood"
-      render={({ field }) => (
-        <FormItem>
-          <FormControl>
-            <Toggle
-              pressed={field.value === value}
-              onPressedChange={() =>
-                field.onChange(field.value === value ? null : value)
-              }
-              className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm border border-gray-200 shadow-sm"
-            >
-              {value}
-            </Toggle>
-          </FormControl>
-        </FormItem>
-      )}
-    />
   );
 }
 
