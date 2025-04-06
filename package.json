@@ -9,6 +9,7 @@
     "start": "vinxi start"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.3.7",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-navigation-menu": "^1.2.5",
