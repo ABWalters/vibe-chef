@@ -2,17 +2,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MacroTarget } from "../types/MacroTarget";
+import { Vibe } from "../types/Mood";
 import { MacroTargetToggle } from "./MacroTargetToggle";
-import { MoodToggle } from "./MoodToggle";
+import { VibeToggle } from "./MoodToggle";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { Textarea } from "./ui/textarea";
 import { Toggle } from "./ui/toggle";
+import { Utensils } from "lucide-react";
 
 const dietaryEnum = z.enum(["Vegetarian", "Low-Carb"]);
 type DietaryOption = z.infer<typeof dietaryEnum>;
 
-const moodSchema = z.object({
+const vibeSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
@@ -23,7 +25,7 @@ const formSchema = z.object({
     .string()
     .min(20, "Please describe what you're looking for in more detail")
     .max(1000, "Text must be less than 1000 characters"),
-  mood: moodSchema.required(),
+  vibe: vibeSchema.required(),
   dietary: z.array(dietaryEnum),
   macros: z.custom<MacroTarget>().optional(),
 });
@@ -33,6 +35,9 @@ type FormSchema = z.infer<typeof formSchema>;
 export function RecipeForm() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      dietary: [],
+    },
   });
 
   function onSubmit(values: FormSchema) {
@@ -67,15 +72,15 @@ export function RecipeForm() {
 
         <div className="space-y-3">
           <h2 className="text-base font-medium text-muted-foreground">
-            What's your mood?
+            What's your vibe?
           </h2>
           <FormField
             control={form.control}
-            name="mood"
+            name="vibe"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <MoodToggle
+                  <VibeToggle
                     value={field.value}
                     onValueChange={field.onChange}
                   />
@@ -122,7 +127,7 @@ export function RecipeForm() {
           type="submit"
           className="w-full bg-black text-white hover:bg-black/90 transition-all duration-200 py-6 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
         >
-          Generate Recipe
+          Let's Get Cooking <Utensils className="w-5 h-5 ml-2 inline-block" />
         </Button>
       </form>
     </Form>
@@ -147,8 +152,8 @@ function DietaryToggle({
               pressed={(field.value ?? []).includes(value)}
               onPressedChange={(pressed) => {
                 const newValue = pressed
-                  ? [...field.value, value]
-                  : field.value.filter((v: string) => v !== value);
+                  ? [...(field.value ?? []), value]
+                  : (field.value ?? []).filter((v: string) => v !== value);
                 field.onChange(newValue);
               }}
               className="px-4 py-1.5 bg-white/50 hover:bg-white/80 data-[state=on]:bg-black data-[state=on]:text-white rounded-full text-sm border border-gray-200 shadow-sm"

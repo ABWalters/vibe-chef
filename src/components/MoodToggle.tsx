@@ -1,35 +1,35 @@
 import { MOODS } from "../data/moods.data";
-import { Mood } from "../types/Mood";
+import { Vibe } from "../types/Mood";
 import { cn } from "../lib/utils";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Coffee, Rocket, UtensilsCrossed } from "lucide-react";
 
-const moodIcons = {
+const vibeIcons = {
   LAZY: Coffee,
   QUICK_AND_EASY: Rocket,
   SLOW_AND_DELICIOUS: UtensilsCrossed,
 } as const;
 
-interface MoodToggleProps {
-  value?: Mood;
-  onValueChange: (value?: Mood) => void;
+interface VibeToggleProps {
+  value?: Vibe;
+  onValueChange: (value?: Vibe) => void;
 }
 
-export function MoodToggle({ value, onValueChange }: MoodToggleProps) {
+export function VibeToggle({ value, onValueChange }: VibeToggleProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {Object.values(MOODS).map((mood: Mood) => {
-        const Icon = moodIcons[mood.id as keyof typeof moodIcons];
+      {Object.values(MOODS).map((vibe: Vibe) => {
+        const Icon = vibeIcons[vibe.id as keyof typeof vibeIcons];
         return (
           <Card
-            key={mood.id}
+            key={vibe.id}
             className={cn(
               "cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98]",
               "border border-gray-200 shadow-sm hover:shadow text-left",
-              value?.id === mood.id && "border-2 border-black bg-black/5"
+              value?.id === vibe.id && "border-2 border-black bg-black/5"
             )}
             onClick={() =>
-              onValueChange(value?.id === mood.id ? undefined : mood)
+              onValueChange(value?.id === vibe.id ? undefined : vibe)
             }
           >
             <CardHeader>
@@ -39,11 +39,11 @@ export function MoodToggle({ value, onValueChange }: MoodToggleProps) {
                   strokeWidth={1.5}
                 />
                 <CardTitle className="text-md font-semibold">
-                  {mood.title}
+                  {vibe.title}
                 </CardTitle>
               </div>
               <CardDescription className="text-xs text-gray-500/90 mt-2 leading-relaxed">
-                {mood.description}
+                {vibe.description}
               </CardDescription>
             </CardHeader>
           </Card>

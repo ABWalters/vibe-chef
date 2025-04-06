@@ -1,13 +1,13 @@
 /**
- * Represents a mood option for recipe selection
+ * Represents a vibe option for recipe selection
  */
-export interface MoodOption {
+export interface VibeOption {
   id: string;
   title: string;
   description: string;
 }
 
 /**
- * Type for accessing a specific mood from the moods data
+ * Type for accessing a specific vibe from the vibes data
  */
-export type Mood = MoodOption;
+export type Vibe = VibeOption;
