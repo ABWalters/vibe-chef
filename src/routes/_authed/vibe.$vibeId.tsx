@@ -26,7 +26,6 @@ function VibeDetails() {
 
         {/* Generated Recipes - Right Two Thirds */}
         <div className="w-2/3">
-          <h2 className="text-2xl font-semibold mb-4">Recipe Suggestions</h2>
           <div className="flex flex-col space-y-4">
             {mockRecipes.map((recipe) => (
               <RecipeSuggestion key={recipe.id} recipe={recipe} />
