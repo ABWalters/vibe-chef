@@ -1,0 +1,111 @@
+---
+description: Use whenever creating new data types or mock data
+globs: 
+alwaysApply: false
+---
+# Type and Mock Data Conventions
+
+## Scope
+
+These conventions specifically apply to **data types** that represent business entities, data structures, and domain models. They do NOT apply to:
+
+- React component prop types or component interfaces
+- Function parameter and return type signatures
+- Utility type definitions
+- Component state types
+
+The focus is on maintaining consistency for data structures that may be:
+
+- Stored in databases
+- Transmitted through APIs
+- Used as application state
+- Serialized/deserialized
+
+## Type Definitions
+
+### File Structure
+
+- Type definitions should be placed in `src/types/{TypeName}.ts`
+- Mock data should be placed in `src/types/{TypeName}.mock.ts`
+
+### Type Naming Conventions
+
+- Use PascalCase for type and interface names
+- Use descriptive, noun-based names for interfaces (e.g., `Analysis`, `Section`, `Part`)
+- Use type unions for simple types with fixed values (e.g., `type PartType = "bullet" | "text"`)
+
+### Interface Structure
+
+- Each interface should represent a single, cohesive data structure
+- Optional properties should be marked with `?` (e.g., `createdAt?: Date`)
+- Use clear, descriptive property names
+- Prefer specific types over `any`
+- Use arrays for collections (e.g., `parts: Part[]`)
+
+## Mock Data Conventions
+
+### File Structure
+
+- Export mock data with the prefix `mock` (e.g., `mockAnalysis`)
+- Import the corresponding type definition
+- One mock instance per file
+
+### Mock Data Guidelines
+
+- Provide realistic, representative data
+- Include examples of all possible variations (e.g., both "bullet" and "text" types)
+- Structure mock data hierarchically to match the type definition
+- Include multiple items in arrays to demonstrate variety
+- For optional fields:
+  - Either omit them to test optional behavior
+  - Or include them to demonstrate proper data structure
+
+### Example Structure
+
+```typescript
+// Type Definition (Analysis.ts)
+export interface Analysis {
+  sections: Section[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  authorId?: string;
+  subjectId?: string;
+}
+
+// Mock Data (Analysis.mock.ts)
+export const mockAnalysis: Analysis = {
+  sections: [
+    {
+      title: "Section Title",
+      parts: [
+        { content: "Content", type: "bullet" },
+        { content: "More Content", type: "text" },
+      ],
+    },
+  ],
+};
+```
+
+## Best Practices
+
+1. **Type Safety**
+
+   - Always explicitly type mock data exports
+   - Ensure mock data fully satisfies the type definition
+
+2. **Maintainability**
+
+   - Keep mock data synchronized with type changes
+   - Use meaningful sample data that represents real use cases
+   - Comment any special cases or edge conditions
+
+3. **Consistency**
+
+   - Follow the established naming pattern: `{TypeName}.ts` and `{TypeName}.mock.ts`
+   - Use consistent export patterns
+   - Maintain similar structure across all mock files
+
+4. **Documentation**
+   - Document any special requirements or constraints
+   - Explain any non-obvious mock data choices
+   - Keep mock data up to date with type changes
