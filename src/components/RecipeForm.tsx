@@ -125,9 +125,16 @@ export function RecipeForm() {
 
         <Button
           type="submit"
-          className="w-full bg-black text-white hover:bg-black/90 transition-all duration-200 py-6 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full relative overflow-hidden bg-gradient-to-r from-black via-gray-800 to-black text-white hover:from-black hover:via-gray-700 hover:to-black transition-all duration-300 py-7 text-lg font-medium tracking-wide rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] group"
         >
-          Let's Get Cooking <Utensils className="w-5 h-5 ml-2 inline-block" />
+          <span className="relative z-10 flex items-center justify-center gap-3">
+            Let's Get Cooking
+            <Utensils
+              className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
+              strokeWidth={2}
+            />
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
         </Button>
       </form>
     </Form>
