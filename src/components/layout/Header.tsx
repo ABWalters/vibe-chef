@@ -19,7 +19,7 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/vibes" className={navigationMenuTriggerStyle()}>
+                <Link to="/cook" className={navigationMenuTriggerStyle()}>
                   Cook
                 </Link>
               </NavigationMenuItem>

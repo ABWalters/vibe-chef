@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Vibe } from "~/types/Vibe";
 import { formatDistanceToNow } from "date-fns";
 import { useVibeStore } from "~/stores/vibeStore";
@@ -19,7 +19,11 @@ function VibesPage() {
       <div className="space-y-4">
         {Object.values(vibes).map((vibe: Vibe, index: number) => (
           <div key={vibe.id}>
-            <div className="flex items-center justify-between group hover:bg-accent/50 p-4 rounded-lg cursor-pointer">
+            <Link
+              to="/vibe/$vibeId"
+              params={{ vibeId: vibe.id }}
+              className="flex items-center justify-between group hover:bg-accent/50 p-4 rounded-lg cursor-pointer block"
+            >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-semibold">
@@ -45,7 +49,7 @@ function VibesPage() {
                 )}
               </div>
               <ChevronRight className="w-5 h-5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-            </div>
+            </Link>
             {index < Object.values(vibes).length - 1 && (
               <Separator className="mt-4" />
             )}
