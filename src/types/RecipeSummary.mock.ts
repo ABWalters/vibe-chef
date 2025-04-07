@@ -1,6 +1,6 @@
-import { Recipe } from "./Recipe";
+import { RecipeSummary } from "./RecipeSummary";
 
-export const mockRecipes: Recipe[] = [
+export const mockRecipes: RecipeSummary[] = [
   {
     id: "1",
     name: "Energizing Green Smoothie Bowl",

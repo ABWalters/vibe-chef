@@ -1,9 +1,10 @@
 import { generateObject } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { z } from "zod";
-import { Recipe } from "../types/Recipe";
+import { RecipeSummary } from "../types/RecipeSummary";
 import { Vibe } from "../types/Vibe";
 import { env } from "../config/env";
+import { uuidv7 } from "uuidv7";
 
 // Schema that matches our Recipe type but in a format suitable for LLM generation
 const recipeGenerationSchema = z.object({
@@ -45,7 +46,7 @@ const openai = createOpenAI({
 export async function generateRecipes(
   vibe: Vibe,
   count: number = 3
-): Promise<Recipe[]> {
+): Promise<RecipeSummary[]> {
   const prompt = createPromptFromVibe(vibe, count);
 
   try {
@@ -56,8 +57,8 @@ export async function generateRecipes(
     });
 
     // Convert the generated recipes to our Recipe type
-    return object.recipes.map((recipe, index) => ({
-      id: `generated_${index}`,
+    return object.recipes.map((recipe) => ({
+      id: uuidv7(),
       name: recipe.name,
       description: recipe.description,
       prepTime: recipe.prepTime,

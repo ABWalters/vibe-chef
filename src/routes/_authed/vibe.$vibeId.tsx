@@ -4,7 +4,7 @@ import { RecipeSuggestion } from "../../components/RecipeSuggestion";
 import { useVibeStore } from "../../stores/vibeStore";
 import { generateRecipes } from "../../services/recipeGenerator";
 import { useEffect, useState } from "react";
-import { Recipe } from "../../types/Recipe";
+import { RecipeSummary } from "../../types/RecipeSummary";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/vibe/$vibeId")({
