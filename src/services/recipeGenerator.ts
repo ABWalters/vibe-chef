@@ -2,9 +2,43 @@ import { generateObject } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { z } from "zod";
 import { RecipeSummary } from "../types/RecipeSummary";
+import { RecipeDetails } from "../types/RecipeDetails";
 import { Vibe } from "../types/Vibe";
 import { env } from "../config/env";
 import { uuidv7 } from "uuidv7";
+
+// Schema for generating recipe details
+const recipeDetailsGenerationSchema = z.object({
+  ingredients: z.array(
+    z.object({
+      name: z.string(),
+      amount: z.number(),
+      unit: z.string(),
+      notes: z.string().optional(),
+    })
+  ),
+  instructions: z.array(
+    z.object({
+      step: z.number(),
+      description: z.string(),
+      time: z.number().optional(),
+    })
+  ),
+  notes: z.array(z.string()).optional(),
+  servings: z.number(),
+  difficulty: z.enum(["Easy", "Medium", "Hard"]),
+  tips: z.array(z.string()).optional(),
+  nutritionPerServing: z
+    .object({
+      protein: z.number(),
+      carbs: z.number(),
+      fat: z.number(),
+      calories: z.number(),
+      fiber: z.number().optional(),
+      sugar: z.number().optional(),
+    })
+    .optional(),
+});
 
 // Schema that matches our Recipe type but in a format suitable for LLM generation
 const recipeGenerationSchema = z.object({
@@ -42,6 +76,52 @@ export type GeneratedRecipe = z.infer<
 const openai = createOpenAI({
   apiKey: env.VITE_OPENAI_API_KEY,
 });
+
+export async function generateRecipeDetails(
+  recipe: RecipeSummary
+): Promise<RecipeDetails> {
+  try {
+    const { object } = await generateObject({
+      model: openai("gpt-4o-mini"),
+      schema: recipeDetailsGenerationSchema,
+      prompt: `Generate detailed recipe information for the following recipe:
+      
+Name: ${recipe.name}
+Description: ${recipe.description}
+Prep Time: ${recipe.prepTime} minutes
+Cook Time: ${recipe.cookTime} minutes
+${
+  recipe.macros
+    ? `Macros:
+- Protein: ${recipe.macros.protein}g
+- Carbs: ${recipe.macros.carbs}g
+- Fat: ${recipe.macros.fat}g
+- Calories: ${recipe.macros.calories}`
+    : ""
+}
+Dietary: ${recipe.dietary.join(", ")}
+
+Please provide:
+1. A detailed list of ingredients with precise measurements and helpful notes
+2. Step-by-step instructions with timing estimates
+3. Useful tips and notes for success
+4. Number of servings
+5. Difficulty level
+6. Detailed nutritional information per serving
+
+Make sure the instructions are clear and easy to follow, and the ingredient measurements are precise and practical.`,
+    });
+
+    // Combine the generated details with the original recipe summary
+    return {
+      ...recipe,
+      ...object,
+    };
+  } catch (error) {
+    console.error("Error generating recipe details:", error);
+    throw new Error("Failed to generate recipe details");
+  }
+}
 
 export async function generateRecipes(
   vibe: Vibe,
