@@ -14,20 +14,28 @@ export const Route = createFileRoute("/_authed/vibe/$vibeId")({
 function VibeDetails() {
   const { vibeId } = useParams({ from: "/_authed/vibe/$vibeId" });
   const getVibeById = useVibeStore((state) => state.getVibeById);
+  const getRecipesForVibe = useVibeStore((state) => state.getRecipesForVibe);
+  const addRecipesToVibe = useVibeStore((state) => state.addRecipesToVibe);
+
   const vibe = getVibeById(vibeId);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Get recipes from store
+  const storedRecipes = getRecipesForVibe(vibeId);
 
   useEffect(() => {
     async function loadRecipes() {
       if (!vibe) return;
 
+      // If we already have recipes for this vibe, don't generate new ones
+      if (storedRecipes && storedRecipes.length > 0) return;
+
       try {
         setLoading(true);
         setError(null);
         const generatedRecipes = await generateRecipes(vibe);
-        setRecipes(generatedRecipes);
+        addRecipesToVibe(vibeId, generatedRecipes);
       } catch (err) {
         setError("Failed to generate recipes. Please try again.");
         console.error("Error generating recipes:", err);
@@ -37,7 +45,7 @@ function VibeDetails() {
     }
 
     loadRecipes();
-  }, [vibe]);
+  }, [vibe, vibeId, storedRecipes, addRecipesToVibe]);
 
   if (!vibe) {
     return <div>Vibe not found</div>;
@@ -63,10 +71,14 @@ function VibeDetails() {
               </div>
             ) : error ? (
               <div className="text-red-500 p-4 text-center">{error}</div>
-            ) : (
-              recipes.map((recipe) => (
+            ) : storedRecipes && storedRecipes.length > 0 ? (
+              storedRecipes.map((recipe) => (
                 <RecipeSuggestion key={recipe.id} recipe={recipe} />
               ))
+            ) : (
+              <div className="text-gray-500 p-4 text-center">
+                No recipes found
+              </div>
             )}
           </div>
         </div>
