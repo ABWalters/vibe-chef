@@ -19,6 +19,8 @@ import { Route as AuthedImport } from './routes/_authed'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthCallbackImport } from './routes/auth/callback'
 import { Route as PathlessLayoutNestedLayoutImport } from './routes/_pathlessLayout/_nested-layout'
+import { Route as AuthedVibesImport } from './routes/_authed/vibes'
+import { Route as AuthedCookImport } from './routes/_authed/cook'
 import { Route as PathlessLayoutNestedLayoutRouteBImport } from './routes/_pathlessLayout/_nested-layout/route-b'
 import { Route as PathlessLayoutNestedLayoutRouteAImport } from './routes/_pathlessLayout/_nested-layout/route-a'
 import { Route as AuthedVibeVibeIdImport } from './routes/_authed/vibe.$vibeId'
@@ -71,6 +73,18 @@ const PathlessLayoutNestedLayoutRoute = PathlessLayoutNestedLayoutImport.update(
     getParentRoute: () => PathlessLayoutRoute,
   } as any,
 )
+
+const AuthedVibesRoute = AuthedVibesImport.update({
+  id: '/vibes',
+  path: '/vibes',
+  getParentRoute: () => AuthedRoute,
+} as any)
+
+const AuthedCookRoute = AuthedCookImport.update({
+  id: '/cook',
+  path: '/cook',
+  getParentRoute: () => AuthedRoute,
+} as any)
 
 const PathlessLayoutNestedLayoutRouteBRoute =
   PathlessLayoutNestedLayoutRouteBImport.update({
@@ -138,6 +152,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
+    '/_authed/cook': {
+      id: '/_authed/cook'
+      path: '/cook'
+      fullPath: '/cook'
+      preLoaderRoute: typeof AuthedCookImport
+      parentRoute: typeof AuthedImport
+    }
+    '/_authed/vibes': {
+      id: '/_authed/vibes'
+      path: '/vibes'
+      fullPath: '/vibes'
+      preLoaderRoute: typeof AuthedVibesImport
+      parentRoute: typeof AuthedImport
+    }
     '/_pathlessLayout/_nested-layout': {
       id: '/_pathlessLayout/_nested-layout'
       path: ''
@@ -179,10 +207,14 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthedRouteChildren {
+  AuthedCookRoute: typeof AuthedCookRoute
+  AuthedVibesRoute: typeof AuthedVibesRoute
   AuthedVibeVibeIdRoute: typeof AuthedVibeVibeIdRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedCookRoute: AuthedCookRoute,
+  AuthedVibesRoute: AuthedVibesRoute,
   AuthedVibeVibeIdRoute: AuthedVibeVibeIdRoute,
 }
 
@@ -225,6 +257,8 @@ export interface FileRoutesByFullPath {
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/cook': typeof AuthedCookRoute
+  '/vibes': typeof AuthedVibesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
@@ -237,6 +271,8 @@ export interface FileRoutesByTo {
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/cook': typeof AuthedCookRoute
+  '/vibes': typeof AuthedVibesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
   '/route-a': typeof PathlessLayoutNestedLayoutRouteARoute
@@ -251,6 +287,8 @@ export interface FileRoutesById {
   '/deferred': typeof DeferredRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/_authed/cook': typeof AuthedCookRoute
+  '/_authed/vibes': typeof AuthedVibesRoute
   '/_pathlessLayout/_nested-layout': typeof PathlessLayoutNestedLayoutRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/_authed/vibe/$vibeId': typeof AuthedVibeVibeIdRoute
@@ -266,6 +304,8 @@ export interface FileRouteTypes {
     | '/deferred'
     | '/login'
     | '/logout'
+    | '/cook'
+    | '/vibes'
     | '/auth/callback'
     | '/vibe/$vibeId'
     | '/route-a'
@@ -277,6 +317,8 @@ export interface FileRouteTypes {
     | '/deferred'
     | '/login'
     | '/logout'
+    | '/cook'
+    | '/vibes'
     | '/auth/callback'
     | '/vibe/$vibeId'
     | '/route-a'
@@ -289,6 +331,8 @@ export interface FileRouteTypes {
     | '/deferred'
     | '/login'
     | '/logout'
+    | '/_authed/cook'
+    | '/_authed/vibes'
     | '/_pathlessLayout/_nested-layout'
     | '/auth/callback'
     | '/_authed/vibe/$vibeId'
@@ -342,6 +386,8 @@ export const routeTree = rootRoute
     "/_authed": {
       "filePath": "_authed.tsx",
       "children": [
+        "/_authed/cook",
+        "/_authed/vibes",
         "/_authed/vibe/$vibeId"
       ]
     },
@@ -359,6 +405,14 @@ export const routeTree = rootRoute
     },
     "/logout": {
       "filePath": "logout.tsx"
+    },
+    "/_authed/cook": {
+      "filePath": "_authed/cook.tsx",
+      "parent": "/_authed"
+    },
+    "/_authed/vibes": {
+      "filePath": "_authed/vibes.tsx",
+      "parent": "/_authed"
     },
     "/_pathlessLayout/_nested-layout": {
       "filePath": "_pathlessLayout/_nested-layout.tsx",

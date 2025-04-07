@@ -1,26 +1,28 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Header } from "../components/Header";
-import { RecipeForm } from "../components/RecipeForm";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useAuthStore } from "~/store/authStore";
 
 export const Route = createFileRoute("/")({
   component: Home,
+  beforeLoad: ({ location }) => {
+    // Get the current auth state directly from the store
+    const { isAuthenticated, isLoading } = useAuthStore.getState();
+
+    // Don't redirect if still loading
+    if (isLoading) return;
+
+    // If not authenticated, redirect to login
+    if (!isAuthenticated) {
+      throw redirect({
+        to: "/login",
+      });
+    }
+
+    throw redirect({
+      to: "/cook",
+    });
+  },
 });
 
 function Home() {
-  return (
-    <main className="container mx-auto px-4 py-12">
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-16">
-        <div className="flex flex-col items-center text-center">
-          <h1 className="text-4xl font-serif mb-10 leading-tight">
-            What do you feel
-            <br />
-            like eating?
-          </h1>
-          <div className="w-full max-w-2xl">
-            <RecipeForm />
-          </div>
-        </div>
-      </div>
-    </main>
-  );
+  return <div>Hello World</div>;
 }

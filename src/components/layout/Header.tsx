@@ -1,11 +1,11 @@
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from "./ui/navigation-menu";
+} from "../ui/navigation-menu";
 import { Link } from "@tanstack/react-router";
 
 export function Header() {
@@ -20,13 +20,13 @@ export function Header() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
-                  Explore
+                <Link to="/vibes" className={navigationMenuTriggerStyle()}>
+                  Vibes
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
-                  Favorites
+                <Link to="/recipes" className={navigationMenuTriggerStyle()}>
+                  Recipes
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>

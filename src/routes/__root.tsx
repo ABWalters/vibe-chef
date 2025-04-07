@@ -9,7 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
-import { Header } from "~/components/Header";
+import { Header } from "~/components/layout/Header";
 import { NotFound } from "~/components/NotFound";
 import globalsCss from "~/styles/globals.css?url";
 import { seo } from "~/utils/seo";
