@@ -3,12 +3,14 @@ import { useVibeStore } from "../../stores/vibeStore";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { MacrosBadge } from "~/components/MacrosBadge";
 import { Clock, Leaf } from "lucide-react";
+import { RecipeDetails } from "~/components/RecipeDetails";
+import { mockRecipeDetails } from "~/types/RecipeDetails.mock";
 
 export const Route = createFileRoute("/_authed/recipe/$recipeId")({
-  component: RecipeDetails,
+  component: RecipeDetailsPage,
 });
 
-function RecipeDetails() {
+function RecipeDetailsPage() {
   const { recipeId } = useParams({ from: "/_authed/recipe/$recipeId" });
   const getRecipeById = useVibeStore((state) => state.getRecipeById);
   const recipe = getRecipeById(recipeId);
@@ -16,6 +18,9 @@ function RecipeDetails() {
   if (!recipe) {
     return <div>Recipe not found</div>;
   }
+
+  // TODO: Replace with actual recipe details from API
+  const recipeDetails = mockRecipeDetails;
 
   return (
     <div className="container mx-auto py-8">
@@ -69,17 +74,7 @@ function RecipeDetails() {
 
         {/* Right Column - 2/3 width */}
         <div className="w-2/3">
-          {/* Content for the right column will go here */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recipe Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-600">
-                Additional recipe details will go here...
-              </p>
-            </CardContent>
-          </Card>
+          <RecipeDetails recipe={recipeDetails} />
         </div>
       </div>
     </div>
