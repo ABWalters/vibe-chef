@@ -1,10 +1,10 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useVibeStore } from "../../stores/vibeStore";
+import { useRecipeStore } from "../../stores/recipeStore";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { MacrosBadge } from "~/components/MacrosBadge";
-import { Clock, Leaf } from "lucide-react";
+import { Clock, Leaf, Loader2 } from "lucide-react";
 import { RecipeDetails } from "~/components/RecipeDetails";
-import { mockRecipeDetails } from "~/types/RecipeDetails.mock";
 
 export const Route = createFileRoute("/_authed/recipe/$recipeId")({
   component: RecipeDetailsPage,
@@ -13,14 +13,14 @@ export const Route = createFileRoute("/_authed/recipe/$recipeId")({
 function RecipeDetailsPage() {
   const { recipeId } = useParams({ from: "/_authed/recipe/$recipeId" });
   const getRecipeById = useVibeStore((state) => state.getRecipeById);
+  const getRecipeDetails = useRecipeStore((state) => state.getRecipeDetails);
+
   const recipe = getRecipeById(recipeId);
+  const recipeDetails = getRecipeDetails(recipeId);
 
   if (!recipe) {
     return <div>Recipe not found</div>;
   }
-
-  // TODO: Replace with actual recipe details from API
-  const recipeDetails = mockRecipeDetails;
 
   return (
     <div className="container mx-auto py-8">
@@ -74,7 +74,16 @@ function RecipeDetailsPage() {
 
         {/* Right Column - 2/3 width */}
         <div className="w-2/3">
-          <RecipeDetails recipe={recipeDetails} />
+          {!recipeDetails ? (
+            <div className="flex items-center justify-center p-8 bg-white rounded-lg shadow-sm border border-gray-100 min-h-[200px]">
+              <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+              <span className="ml-3 text-gray-500">
+                Loading recipe details...
+              </span>
+            </div>
+          ) : (
+            <RecipeDetails recipe={recipeDetails} />
+          )}
         </div>
       </div>
     </div>
