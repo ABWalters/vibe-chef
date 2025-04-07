@@ -109,6 +109,8 @@ Please provide:
 5. Difficulty level
 6. Detailed nutritional information per serving
 
+ALWAYS use metric units for measurements.
+
 Make sure the instructions are clear and easy to follow, and the ingredient measurements are precise and practical.`,
     });
 

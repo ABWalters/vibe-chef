@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { MacrosBadge } from "~/components/MacrosBadge";
 import { Clock, Leaf, Loader2 } from "lucide-react";
 import { RecipeDetails } from "~/components/RecipeDetails";
+import { generateRecipeDetails } from "~/services/recipeGenerator";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authed/recipe/$recipeId")({
   component: RecipeDetailsPage,
@@ -14,9 +16,20 @@ function RecipeDetailsPage() {
   const { recipeId } = useParams({ from: "/_authed/recipe/$recipeId" });
   const getRecipeById = useVibeStore((state) => state.getRecipeById);
   const getRecipeDetails = useRecipeStore((state) => state.getRecipeDetails);
+  const addRecipeDetails = useRecipeStore((state) => state.addRecipeDetails);
 
   const recipe = getRecipeById(recipeId);
   const recipeDetails = getRecipeDetails(recipeId);
+
+  useEffect(() => {
+    async function generateDetails() {
+      if (!recipe || recipeDetails) return;
+      const details = await generateRecipeDetails(recipe);
+      addRecipeDetails(recipeId, details);
+    }
+
+    generateDetails();
+  }, [recipe, recipeId, recipeDetails, addRecipeDetails]);
 
   if (!recipe) {
     return <div>Recipe not found</div>;
